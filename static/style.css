@@ -287,7 +287,13 @@ button[type="submit"]:hover {
 }
 
 /* Expanded state — card grows to fit full answer */
-.card.expanded { height: auto; }
+.card.expanded {
+  height: auto;
+  grid-column: 1 / -1;   /* span full grid width */
+  max-width: 860px;       /* don't get too wide on large screens */
+  justify-self: center;   /* centre within the grid row */
+  width: 100%;
+}
 
 .card.expanded .card-inner {
   height: auto;
