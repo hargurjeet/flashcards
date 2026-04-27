@@ -360,6 +360,49 @@ button[type="submit"]:hover {
 .recall-btn.average  { background: #fef3c7; color: #d97706; }
 .recall-btn.good     { background: #d1fae5; color: #059669; }
 
+/* Delete confirmation overlay */
+.delete-confirm {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.97);
+  border-radius: 10px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px;
+  text-align: center;
+}
+
+.delete-confirm p {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.delete-confirm-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.confirm-yes, .confirm-no {
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+
+.confirm-yes { background: #ef4444; color: white; }
+.confirm-yes:hover { background: #dc2626; }
+.confirm-no  { background: #e2e8f0; color: #4a5568; }
+.confirm-no:hover { background: #cbd5e0; }
+
+.card.confirming .delete-confirm { display: flex; }
+
 /* Recall emoji indicator on card front */
 .recall-indicator {
   position: absolute;

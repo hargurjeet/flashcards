@@ -144,6 +144,13 @@ function appendCard(card) {
         ${indicator}
         <div class="card-label">Question</div>
         <div class="card-text">${escapeHtml(card.question)}</div>
+        <div class="delete-confirm">
+          <p>Delete this card?</p>
+          <div class="delete-confirm-btns">
+            <button class="confirm-yes">Yes, delete</button>
+            <button class="confirm-no">Cancel</button>
+          </div>
+        </div>
       </div>
       <div class="card-back">
         <div class="card-label">Answer</div>
@@ -194,8 +201,18 @@ function appendCard(card) {
     this.classList.toggle('flipped');
   });
 
-  // Delete
-  wrapper.querySelector('.delete-btn').addEventListener('click', async function (e) {
+  // Delete — show inline confirmation first
+  wrapper.querySelector('.delete-btn').addEventListener('click', function (e) {
+    e.stopPropagation();
+    wrapper.classList.add('confirming');
+  });
+
+  wrapper.querySelector('.confirm-no').addEventListener('click', function (e) {
+    e.stopPropagation();
+    wrapper.classList.remove('confirming');
+  });
+
+  wrapper.querySelector('.confirm-yes').addEventListener('click', async function (e) {
     e.stopPropagation();
     await fetch(`/api/cards/${card.id}`, { method: 'DELETE' });
     wrapper.remove();
