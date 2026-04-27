@@ -41,6 +41,7 @@ def index():
 
 @app.route('/api/categories/<username>', methods=['GET'])
 def get_categories(username):
+    username = username.strip().lower()
     with get_db() as conn:
         rows = conn.execute(
             'SELECT DISTINCT category FROM cards WHERE username = ? ORDER BY category',
@@ -51,6 +52,7 @@ def get_categories(username):
 
 @app.route('/api/cards/<username>', methods=['GET'])
 def get_cards(username):
+    username = username.strip().lower()
     category = request.args.get('category')
     recall   = request.args.get('recall')
 
@@ -78,7 +80,7 @@ def get_cards(username):
 @app.route('/api/cards', methods=['POST'])
 def add_card():
     data = request.get_json()
-    username = (data.get('username') or '').strip()
+    username = (data.get('username') or '').strip().lower()
     question = (data.get('question') or '').strip()
     answer   = (data.get('answer')   or '').strip()
     category = (data.get('category') or '').strip() or 'General'

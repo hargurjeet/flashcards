@@ -12,12 +12,13 @@ const userBadge   = document.getElementById('user-badge');
 // Login
 document.getElementById('login-form').addEventListener('submit', function (e) {
   e.preventDefault();
-  const name = document.getElementById('username-input').value.trim();
+  const name = document.getElementById('username-input').value.trim().toLowerCase();
   if (name) enterApp(name);
 });
 
-// Switch user
+// Log out
 document.getElementById('switch-user-btn').addEventListener('click', function () {
+  localStorage.removeItem('flashcard_user');
   currentUser = currentCategory = currentRecall = null;
   app.classList.add('hidden');
   loginScreen.classList.remove('hidden');
@@ -53,8 +54,9 @@ document.getElementById('card-form').addEventListener('submit', async function (
 });
 
 async function enterApp(username) {
-  currentUser = username;
-  userBadge.textContent = username;
+  currentUser = username.trim().toLowerCase();
+  localStorage.setItem('flashcard_user', currentUser);
+  userBadge.textContent = currentUser;
   loginScreen.classList.add('hidden');
   app.classList.remove('hidden');
   await loadCards();
@@ -229,3 +231,7 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 }
+
+// Restore session on page load
+const savedUser = localStorage.getItem('flashcard_user');
+if (savedUser) enterApp(savedUser);
