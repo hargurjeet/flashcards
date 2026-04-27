@@ -3,7 +3,7 @@ import os
 from flask import Flask, request, jsonify, send_from_directory
 
 app = Flask(__name__, static_folder='static')
-DB_PATH = os.path.join(os.path.dirname(__file__), 'flashcards.db')
+DB_PATH = os.environ.get('DB_PATH', os.path.join(os.path.dirname(__file__), 'flashcards.db'))
 
 
 def get_db():
@@ -67,4 +67,4 @@ def delete_card(card_id):
 if __name__ == '__main__':
     init_db()
     print('Flashcards running at http://localhost:8080')
-    app.run(debug=True, port=8080)
+    app.run(host='0.0.0.0', port=8080)
