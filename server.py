@@ -28,6 +28,10 @@ def init_db():
             conn.execute("ALTER TABLE cards ADD COLUMN category TEXT NOT NULL DEFAULT 'General'")
         except Exception:
             pass
+        try:
+            conn.execute("ALTER TABLE cards ADD COLUMN recall TEXT DEFAULT NULL")
+        except Exception:
+            pass
 
 
 @app.route('/')
@@ -48,17 +52,26 @@ def get_categories(username):
 @app.route('/api/cards/<username>', methods=['GET'])
 def get_cards(username):
     category = request.args.get('category')
+    recall   = request.args.get('recall')
+
+    conditions = ['username = ?']
+    params     = [username]
+
+    if category:
+        conditions.append('category = ?')
+        params.append(category)
+    if recall == 'unreviewed':
+        conditions.append('recall IS NULL')
+    elif recall in ('good', 'average', 'bad'):
+        conditions.append('recall = ?')
+        params.append(recall)
+
+    where = ' AND '.join(conditions)
     with get_db() as conn:
-        if category:
-            rows = conn.execute(
-                'SELECT id, question, answer, category FROM cards WHERE username = ? AND category = ? ORDER BY created_at',
-                (username, category)
-            ).fetchall()
-        else:
-            rows = conn.execute(
-                'SELECT id, question, answer, category FROM cards WHERE username = ? ORDER BY created_at',
-                (username,)
-            ).fetchall()
+        rows = conn.execute(
+            f'SELECT id, question, answer, category, recall FROM cards WHERE {where} ORDER BY created_at',
+            params
+        ).fetchall()
     return jsonify([dict(r) for r in rows])
 
 
@@ -78,6 +91,17 @@ def add_card():
         )
         card_id = cursor.lastrowid
     return jsonify({'id': card_id, 'question': question, 'answer': answer, 'category': category}), 201
+
+
+@app.route('/api/cards/<int:card_id>', methods=['PATCH'])
+def update_recall(card_id):
+    data   = request.get_json()
+    recall = data.get('recall')
+    if recall not in ('good', 'average', 'bad', None):
+        return jsonify({'error': 'invalid recall value'}), 400
+    with get_db() as conn:
+        conn.execute('UPDATE cards SET recall = ? WHERE id = ?', (recall, card_id))
+    return jsonify({'ok': True})
 
 
 @app.route('/api/cards/<int:card_id>', methods=['DELETE'])

@@ -239,6 +239,29 @@ button[type="submit"]:hover {
   border-color: #4f46e5;
 }
 
+/* Recall bar */
+.recall-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 0 32px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.recall-bar-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #718096;
+  margin-right: 2px;
+}
+
+.pill.recall-bad.active    { background: #ef4444; border-color: #ef4444; color: white; }
+.pill.recall-average.active { background: #f59e0b; border-color: #f59e0b; color: white; }
+.pill.recall-good.active   { background: #10b981; border-color: #10b981; color: white; }
+.pill.recall-unreviewed.active { background: #6b7280; border-color: #6b7280; color: white; }
+
 /* Category badge on card front */
 .category-badge {
   position: absolute;
@@ -257,7 +280,7 @@ button[type="submit"]:hover {
 /* Flip Card */
 .card {
   perspective: 1000px;
-  height: 180px;
+  height: 220px;
   cursor: pointer;
 }
 
@@ -294,12 +317,56 @@ button[type="submit"]:hover {
 .card-front {
   background: white;
   border: 2px solid #e2e8f0;
+  transition: border-color 0.3s;
 }
+
+/* Recall status border colour on card front */
+.card[data-recall="good"]    .card-front { border-color: #10b981; }
+.card[data-recall="average"] .card-front { border-color: #f59e0b; }
+.card[data-recall="bad"]     .card-front { border-color: #ef4444; }
 
 .card-back {
   background: #4f46e5;
   color: white;
   transform: rotateY(180deg);
+}
+
+/* Recall rating buttons on card back */
+.recall-buttons {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.recall-btn {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  opacity: 0.85;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.recall-btn:hover    { opacity: 1; transform: scale(1.05); }
+.recall-btn.selected { opacity: 1; transform: scale(1.08); box-shadow: 0 0 0 2px white; }
+.recall-btn.bad      { background: #fee2e2; color: #dc2626; }
+.recall-btn.average  { background: #fef3c7; color: #d97706; }
+.recall-btn.good     { background: #d1fae5; color: #059669; }
+
+/* Recall emoji indicator on card front */
+.recall-indicator {
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  font-size: 1rem;
+  line-height: 1;
 }
 
 .card-label {
