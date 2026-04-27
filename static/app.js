@@ -198,9 +198,15 @@ function appendCard(card) {
     });
   });
 
-  // Flip on card click
+  // Flip on card click — expand after animation completes, collapse immediately on un-flip
   wrapper.addEventListener('click', function () {
-    this.classList.toggle('flipped');
+    if (this.classList.contains('flipped')) {
+      this.classList.remove('expanded');
+      this.classList.remove('flipped');
+    } else {
+      this.classList.add('flipped');
+      setTimeout(() => this.classList.add('expanded'), 500);
+    }
   });
 
   // Delete — show inline confirmation first

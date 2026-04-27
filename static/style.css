@@ -280,8 +280,41 @@ button[type="submit"]:hover {
 /* Flip Card */
 .card {
   perspective: 1000px;
+  min-height: 220px;
   height: 220px;
   cursor: pointer;
+  transition: height 0.3s ease;
+}
+
+/* Expanded state — card grows to fit full answer */
+.card.expanded { height: auto; }
+
+.card.expanded .card-inner {
+  height: auto;
+  min-height: 220px;
+}
+
+.card.expanded .card-front { display: none; }
+
+.card.expanded .card-back {
+  position: relative;
+  min-height: 220px;
+  height: auto;
+  overflow-y: visible;
+  padding-bottom: 20px;
+}
+
+.card.expanded .card-back .card-text {
+  max-height: none;
+  overflow-y: visible;
+  text-align: left;
+  white-space: pre-wrap;
+}
+
+.card.expanded .card-back .recall-buttons {
+  position: relative;
+  bottom: auto;
+  margin-top: 16px;
 }
 
 .card-inner {
