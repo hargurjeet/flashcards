@@ -399,6 +399,87 @@ button[type="submit"]:hover {
 .recall-btn.average  { background: #fef3c7; color: #d97706; }
 .recall-btn.good     { background: #d1fae5; color: #059669; }
 
+/* Edit button */
+.edit-btn {
+  position: absolute;
+  top: 8px;
+  right: 32px;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  opacity: 0.3;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: opacity 0.2s;
+  color: inherit;
+}
+
+.edit-btn:hover { opacity: 0.8; }
+
+/* Edit overlay */
+.edit-overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: white;
+  border-radius: 10px;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  overflow-y: auto;
+  text-align: left;
+}
+
+.card.editing .edit-overlay { display: flex; }
+.card.editing { height: auto; }
+.card.editing .card-inner { height: auto; min-height: 220px; }
+
+.edit-form-group { display: flex; flex-direction: column; gap: 3px; }
+
+.edit-form-group label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #4a5568;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.edit-form-group input,
+.edit-form-group textarea {
+  padding: 6px 10px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+
+.edit-form-group input:focus,
+.edit-form-group textarea:focus {
+  outline: none;
+  border-color: #4f46e5;
+}
+
+.edit-actions { display: flex; gap: 8px; margin-top: 4px; }
+
+.edit-save, .edit-cancel {
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+
+.edit-save   { background: #4f46e5; color: white; }
+.edit-save:hover { background: #4338ca; }
+.edit-cancel { background: #e2e8f0; color: #4a5568; }
+.edit-cancel:hover { background: #cbd5e0; }
+
 /* Delete confirmation overlay */
 .delete-confirm {
   display: none;

@@ -95,6 +95,22 @@ def add_card():
     return jsonify({'id': card_id, 'question': question, 'answer': answer, 'category': category}), 201
 
 
+@app.route('/api/cards/<int:card_id>', methods=['PUT'])
+def update_card(card_id):
+    data     = request.get_json()
+    question = (data.get('question') or '').strip()
+    answer   = (data.get('answer')   or '').strip()
+    category = (data.get('category') or '').strip() or 'General'
+    if not question or not answer:
+        return jsonify({'error': 'question and answer are required'}), 400
+    with get_db() as conn:
+        conn.execute(
+            'UPDATE cards SET question = ?, answer = ?, category = ? WHERE id = ?',
+            (question, answer, category, card_id)
+        )
+    return jsonify({'ok': True, 'question': question, 'answer': answer, 'category': category})
+
+
 @app.route('/api/cards/<int:card_id>', methods=['PATCH'])
 def update_recall(card_id):
     data   = request.get_json()

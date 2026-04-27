@@ -142,6 +142,7 @@ function appendCard(card) {
     <div class="card-inner">
       <div class="card-front">
         <button class="delete-btn" title="Delete card">✕</button>
+        <button class="edit-btn" title="Edit card">✎</button>
         <span class="category-badge">${escapeHtml(card.category || 'General')}</span>
         ${indicator}
         <div class="card-label">Question</div>
@@ -151,6 +152,24 @@ function appendCard(card) {
           <div class="delete-confirm-btns">
             <button class="confirm-yes">Yes, delete</button>
             <button class="confirm-no">Cancel</button>
+          </div>
+        </div>
+        <div class="edit-overlay">
+          <div class="edit-form-group">
+            <label>Question</label>
+            <input class="edit-question" type="text" value="${escapeHtml(card.question)}" />
+          </div>
+          <div class="edit-form-group">
+            <label>Answer</label>
+            <textarea class="edit-answer" rows="4">${escapeHtml(card.answer)}</textarea>
+          </div>
+          <div class="edit-form-group">
+            <label>Category</label>
+            <input class="edit-category" type="text" list="category-suggestions" value="${escapeHtml(card.category || 'General')}" />
+          </div>
+          <div class="edit-actions">
+            <button class="edit-save">Save</button>
+            <button class="edit-cancel">Cancel</button>
           </div>
         </div>
       </div>
@@ -225,6 +244,42 @@ function appendCard(card) {
     await fetch(`/api/cards/${card.id}`, { method: 'DELETE' });
     wrapper.remove();
     await loadCategories();
+  });
+
+  // Edit — open overlay
+  wrapper.querySelector('.edit-btn').addEventListener('click', function (e) {
+    e.stopPropagation();
+    wrapper.classList.add('editing');
+  });
+
+  wrapper.querySelector('.edit-cancel').addEventListener('click', function (e) {
+    e.stopPropagation();
+    wrapper.classList.remove('editing');
+  });
+
+  wrapper.querySelector('.edit-save').addEventListener('click', async function (e) {
+    e.stopPropagation();
+    const question = wrapper.querySelector('.edit-question').value.trim();
+    const answer   = wrapper.querySelector('.edit-answer').value.trim();
+    const category = wrapper.querySelector('.edit-category').value.trim() || 'General';
+    if (!question || !answer) return;
+
+    const res = await fetch(`/api/cards/${card.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question, answer, category })
+    });
+
+    if (res.ok) {
+      card.question = question;
+      card.answer   = answer;
+      card.category = category;
+      wrapper.querySelector('.card-text').textContent = question;
+      wrapper.querySelector('.card-back .card-text').textContent = answer;
+      wrapper.querySelector('.category-badge').textContent = category;
+      wrapper.classList.remove('editing');
+      await loadCategories();
+    }
   });
 
   grid.appendChild(wrapper);
