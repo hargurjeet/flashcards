@@ -41,9 +41,16 @@
           <label for="answer">Answer (back)</label>
           <textarea id="answer" rows="3" placeholder="Enter the answer..." required></textarea>
         </div>
+        <div class="form-group">
+          <label for="category">Category</label>
+          <input type="text" id="category" list="category-suggestions" placeholder="e.g. Gen-AI, Machine Learning..." />
+          <datalist id="category-suggestions"></datalist>
+        </div>
         <button type="submit">Add Card</button>
       </form>
     </section>
+
+    <div class="filter-bar" id="filter-bar"></div>
 
     <section class="card-grid" id="card-grid"></section>
   </div>

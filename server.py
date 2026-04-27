@@ -20,9 +20,14 @@ def init_db():
                 username TEXT NOT NULL,
                 question TEXT NOT NULL,
                 answer   TEXT NOT NULL,
+                category TEXT NOT NULL DEFAULT 'General',
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         ''')
+        try:
+            conn.execute("ALTER TABLE cards ADD COLUMN category TEXT NOT NULL DEFAULT 'General'")
+        except Exception:
+            pass
 
 
 @app.route('/')
@@ -30,13 +35,30 @@ def index():
     return send_from_directory('static', 'index.html')
 
 
-@app.route('/api/cards/<username>', methods=['GET'])
-def get_cards(username):
+@app.route('/api/categories/<username>', methods=['GET'])
+def get_categories(username):
     with get_db() as conn:
         rows = conn.execute(
-            'SELECT id, question, answer FROM cards WHERE username = ? ORDER BY created_at',
+            'SELECT DISTINCT category FROM cards WHERE username = ? ORDER BY category',
             (username,)
         ).fetchall()
+    return jsonify([r['category'] for r in rows])
+
+
+@app.route('/api/cards/<username>', methods=['GET'])
+def get_cards(username):
+    category = request.args.get('category')
+    with get_db() as conn:
+        if category:
+            rows = conn.execute(
+                'SELECT id, question, answer, category FROM cards WHERE username = ? AND category = ? ORDER BY created_at',
+                (username, category)
+            ).fetchall()
+        else:
+            rows = conn.execute(
+                'SELECT id, question, answer, category FROM cards WHERE username = ? ORDER BY created_at',
+                (username,)
+            ).fetchall()
     return jsonify([dict(r) for r in rows])
 
 
@@ -46,15 +68,16 @@ def add_card():
     username = (data.get('username') or '').strip()
     question = (data.get('question') or '').strip()
     answer   = (data.get('answer')   or '').strip()
+    category = (data.get('category') or '').strip() or 'General'
     if not username or not question or not answer:
         return jsonify({'error': 'username, question and answer are required'}), 400
     with get_db() as conn:
         cursor = conn.execute(
-            'INSERT INTO cards (username, question, answer) VALUES (?, ?, ?)',
-            (username, question, answer)
+            'INSERT INTO cards (username, question, answer, category) VALUES (?, ?, ?, ?)',
+            (username, question, answer, category)
         )
         card_id = cursor.lastrowid
-    return jsonify({'id': card_id, 'question': question, 'answer': answer}), 201
+    return jsonify({'id': card_id, 'question': question, 'answer': answer, 'category': category}), 201
 
 
 @app.route('/api/cards/<int:card_id>', methods=['DELETE'])
